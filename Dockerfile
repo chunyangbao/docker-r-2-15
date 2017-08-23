@@ -1,14 +1,10 @@
 FROM r-base:3.1.3
 
-COPY runS3OnBatchInstallPackages.sh /usr/local/bin/runS3OnBatch.sh
-COPY runLocalInstallPackages.sh /usr/local/bin/runLocal.sh
 
 RUN mkdir /build
 
-COPY Dockerfile /build/Dockerfile
-COPY jobdef.json /build/jobdef.json
 COPY Cairo_1.5-9.tar.gz /build/Cairo_1.5-9.tar.gz
-COPY installPackages.R /build/source/installPackages.R
+
 
 RUN apt-get update && apt-get upgrade --yes && \
     apt-get install build-essential --yes && \
@@ -20,7 +16,6 @@ RUN pip install awscli
 
 RUN apt-get update && \
     apt-get install curl --yes && \
-    chmod ugo+x /usr/local/bin/runS3OnBatch.sh && \
     apt-get install libfreetype6=2.5.2-3+deb8u2 --yes --force-yes && \
     apt-get install libfreetype6-dev --yes  --force-yes && \
     apt-get install libfontconfig1-dev --yes  --force-yes && \
@@ -43,6 +38,17 @@ RUN  mkdir packages && \
     apt-get install libcurl4-gnutls-dev --yes && \
     R CMD INSTALL /build/Cairo_1.5-9.tar.gz
 
+COPY common/container_scripts/runLocal.sh /usr/local/bin/runLocal.sh
+COPY Dockerfile /build/Dockerfile
+COPY jobdef.json /build/jobdef.json
+COPY common/container_scripts/misc/RunR.java /build/RunR.java
+COPY common/container_scripts/installPackages.R-2 /build/source/installPackages.R
+COPY common/container_scripts/runS3OnBatch.sh /usr/local/bin/runS3OnBatch.sh
+COPY runS3Batch_prerun_custom.sh /usr/local/bin/runS3Batch_prerun_custom.sh
+COPY runS3Batch_postrun_custom.sh /usr/local/bin/runS3Batch_postrun_custom.sh
+
+
+RUN chmod a+x /usr/local/bin/runS3OnBatch.sh /usr/local/bin/runLocal.sh
 
 
  
