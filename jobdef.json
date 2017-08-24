@@ -24,7 +24,7 @@
 
             }
         ],
-        "image": "genepattern/dockerr-2-15",
+        "image": "genepattern/docker-r-2-15",
         "memory": 2000,
         "mountPoints": [],
         "ulimits": [],
